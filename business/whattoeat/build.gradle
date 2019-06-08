@@ -1,22 +1,33 @@
-apply plugin: 'com.android.application'
+if (!isNeedEatModule.toBoolean()) {
+    apply plugin: 'com.android.application'
+} else {
+    apply plugin: 'com.android.library'
+}
 
 android {
     compileSdkVersion rootProject.ext.android["compileSdkVersion"]
     buildToolsVersion rootProject.ext.android["buildToolsVersion"]
+
+
+
     defaultConfig {
-        applicationId "learn.lqf.com.funnyapp"
+        if (!isNeedEatModule.toBoolean()) {
+            applicationId "lqf.com.whattoeat"
+        }
+
         minSdkVersion rootProject.ext.android["minSdkVersion"]
         targetSdkVersion rootProject.ext.android["targetSdkVersion"]
-        versionCode rootProject.ext.android["versionCode"]
-        versionName rootProject.ext.android["versionName"]
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        versionCode 1
+        versionName "1.0"
 
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = [moduleName: project.getName()]
             }
         }
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -24,18 +35,20 @@ android {
         }
     }
 
-    dataBinding {
-        enabled true
+    sourceSets {
+        main {
+            if (!isNeedEatModule.toBoolean()) {
+                manifest.srcFile 'src/main/module/AndroidManifest.xml'
+            } else {
+                manifest.srcFile 'src/main/AndroidManifest.xml'
+            }
+        }
     }
-    compileOptions {
-        sourceCompatibility = '1.8'
-        targetCompatibility = '1.8'
-    }
+
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
 
     implementation rootProject.ext.dependencies["appcompat-v7"]
     implementation rootProject.ext.dependencies["constraint-layout"]
@@ -48,8 +61,4 @@ dependencies {
 
     implementation project(':baselibrary')
     implementation project(':commonlibrary')
-
-    if (isNeedEatModule.toBoolean()) {
-        implementation project(':business:whattoeat')
-    }
 }

@@ -2,12 +2,16 @@ package learn.lqf.com.baselibrary.base;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.support.v4.app.FragmentTransaction;
+
+import com.blankj.ALog;
+import com.hjq.toast.ToastUtils;
+
+import learn.lqf.com.baselibrary.utils.DialogUtils;
 
 /**
  * @description :
@@ -16,9 +20,10 @@ import android.view.ViewGroup;
  */
 
 public abstract class BaseFragment extends Fragment {
-    private BaseApplication application;
-    private View rootView;
 
+    private static final String STATE_SAVE_IS_HIDDEN = "STATE_SAVE_IS_HIDDEN";
+    protected DialogUtils dUtils;
+    protected boolean refresh = true;
 
     @Override
     public void onAttach(Context context) {
@@ -31,43 +36,64 @@ public abstract class BaseFragment extends Fragment {
 
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        dUtils = new DialogUtils();
 
-        application = (BaseApplication) (getActivity().getApplication());
-        if (null == rootView) {//如果缓存中有rootView则直接使用
-            rootView = inflater.inflate(getContentViewId(), container, false);
-            //在OnCreate方法中调用下面方法，然后再使用线程，就能在uncaughtException方法中捕获到异常
-            if (isAdded()) {
-                initData();
-                initView();
+        if (savedInstanceState != null) {
+            boolean isSupportHidden = savedInstanceState.getBoolean(STATE_SAVE_IS_HIDDEN);
+            assert getFragmentManager() != null;
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            ALog.e("savedInstanceState不为空", isSupportHidden ? "显示" : "隐藏");
+            if (isSupportHidden) {
+                ft.hide(this);
+            } else {
+                ft.show(this);
             }
+            ft.commit();
         }
-        return rootView;
     }
 
-    protected abstract void initView();
+    public void setLeft() {
+    }
 
-    protected abstract void initData();
+    public void setTitle(String title) {
+    }
 
-    protected abstract int getContentViewId();
+    public void setRight() {
+    }
+
+    public void goTo(Class clazz) {
+        startActivity(new Intent(getActivity(), clazz));
+    }
+
+    public void showToast(String msg) {
+        ToastUtils.show(msg);
+    }
+
+    public void showProgressDialog(String title) {
+        dUtils.showProgressDialog(getActivity(), title);
+    }
+
+    public void showWarningDialog(String message) {
+        dUtils.showWarningDialog(getActivity(), message);
+    }
+
+    public void dissDialog() {
+        dUtils.dissDialog();
+    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
     }
 
-    public View getRootView() {
-        return rootView;
-    }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (rootView != null) {//为rootView做缓存，在viewpager中使用fragment时可以提升切换流畅度
-            ((ViewGroup) rootView.getParent()).removeView(rootView);
-        }
+
     }
 
 }

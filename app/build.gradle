@@ -39,12 +39,21 @@ dependencies {
 
     implementation rootProject.ext.dependencies["appcompat-v7"]
     implementation rootProject.ext.dependencies["constraint-layout"]
-    androidTestImplementation rootProject.ext.dependencies["junit"]
-    androidTestImplementation rootProject.ext.dependencies["test:runner"]
-    androidTestImplementation rootProject.ext.dependencies["espresso-core"]
+//    androidTestImplementation rootProject.ext.dependencies["junit"]
+//    androidTestImplementation rootProject.ext.dependencies["test:runner"]
+//    androidTestImplementation rootProject.ext.dependencies["espresso-core"]
 
     implementation rootProject.ext.dependencies["arouter-api"]
     annotationProcessor rootProject.ext.dependencies["arouter-compiler"]
+
+
+    implementation rootProject.ext.dependencies["toast"]
+    implementation rootProject.ext.dependencies["SmartRefreshLayout"]
+    implementation rootProject.ext.dependencies["customactivityoncrash"]
+    implementation rootProject.ext.dependencies["takephoto_library"]
+    implementation rootProject.ext.dependencies["material-dialogs"]
+    implementation rootProject.ext.dependencies["alog"]
+    implementation rootProject.ext.dependencies["permission"]
 
     implementation project(':baselibrary')
     implementation project(':commonlibrary')
